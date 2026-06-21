@@ -53,7 +53,7 @@ export async function executeCodexCLI(
   options?: CodexExecOptions,
   onProgress?: (newOutput: string) => void
 ): Promise<string> {
-  const args: string[] = [];
+  const flags: string[] = [];
 
   // Validate options
   if (options?.approvalPolicy && options?.yolo) {
@@ -65,35 +65,35 @@ export async function executeCodexCLI(
 
   // Build command arguments
   if (options?.yolo) {
-    args.push(CLI.FLAGS.YOLO);
+    flags.push(CLI.FLAGS.YOLO);
   } else if (options?.fullAuto) {
-    args.push(CLI.FLAGS.FULL_AUTO);
+    flags.push(CLI.FLAGS.FULL_AUTO);
   } else {
     if (options?.approvalPolicy) {
-      args.push(CLI.FLAGS.ASK_FOR_APPROVAL, options.approvalPolicy);
+      flags.push(CLI.FLAGS.CONFIG, `approval_policy=${options.approvalPolicy}`);
     }
     // Note: --search requires network access, so if search is enabled and no explicit sandbox mode
     // is set, we need to ensure network is not blocked
     if (options?.sandboxMode) {
-      args.push(CLI.FLAGS.SANDBOX_MODE, options.sandboxMode);
+      flags.push(CLI.FLAGS.SANDBOX_MODE, options.sandboxMode);
     } else if (options?.search || options?.oss) {
       // Auto-enable workspace-write for search/oss if no sandbox specified
       Logger.debug(
         'Search/OSS enabled: auto-setting sandbox to workspace-write for network access'
       );
-      args.push(CLI.FLAGS.SANDBOX_MODE, 'workspace-write');
+      flags.push(CLI.FLAGS.SANDBOX_MODE, 'workspace-write');
     } else if (options?.approvalPolicy) {
       // Smart default: if approvalPolicy is set but no sandboxMode specified,
       // auto-enable workspace-write to prevent read-only permission errors
       Logger.debug(
         'Approval policy set without sandbox mode: auto-setting sandbox to workspace-write'
       );
-      args.push(CLI.FLAGS.SANDBOX_MODE, 'workspace-write');
+      flags.push(CLI.FLAGS.SANDBOX_MODE, 'workspace-write');
     }
   }
 
   if (options?.model) {
-    args.push(CLI.FLAGS.MODEL, options.model);
+    flags.push(CLI.FLAGS.MODEL, options.model);
   }
 
   // Resolve working directory using intelligent fallback chain
@@ -103,13 +103,13 @@ export async function executeCodexCLI(
   });
 
   if (resolvedWorkingDir) {
-    args.push(CLI.FLAGS.CD, resolvedWorkingDir);
+    flags.push(CLI.FLAGS.CD, resolvedWorkingDir);
     Logger.debug(`Resolved working directory: ${resolvedWorkingDir}`);
   }
 
   // OSS (Ollama) mode
   if (options?.oss) {
-    args.push(CLI.FLAGS.OSS);
+    flags.push(CLI.FLAGS.OSS);
   }
 
   // Enable features (including web search)
@@ -122,21 +122,18 @@ export async function executeCodexCLI(
 
   // Add all features to args
   for (const feature of enableFeatures) {
-    args.push(CLI.FLAGS.ENABLE, feature);
+    flags.push(CLI.FLAGS.ENABLE, feature);
   }
 
   // Disable features
   if (options?.disableFeatures && Array.isArray(options.disableFeatures)) {
     for (const feature of options.disableFeatures) {
-      args.push(CLI.FLAGS.DISABLE, feature);
+      flags.push(CLI.FLAGS.DISABLE, feature);
     }
   }
 
   // Non-interactive run
-  args.push('exec');
-
-  // Skip git repo check (not all environments are git repos)
-  args.push(CLI.FLAGS.SKIP_GIT_REPO_CHECK);
+  const args = ['exec', ...flags, CLI.FLAGS.SKIP_GIT_REPO_CHECK];
 
   // Add conciseness instruction
   const concisePrompt = `Please provide a focused, concise response without unnecessary elaboration. ${prompt}`;
@@ -205,40 +202,40 @@ export async function executeCodex(
   options?: CodexExecOptions & { [key: string]: any },
   onProgress?: (newOutput: string) => void
 ): Promise<string> {
-  const args: string[] = [];
+  const flags: string[] = [];
 
   // Model selection
   if (options?.model) {
-    args.push(CLI.FLAGS.MODEL, options.model);
+    flags.push(CLI.FLAGS.MODEL, options.model);
   }
 
   // Safety controls
   if (options?.yolo) {
-    args.push(CLI.FLAGS.YOLO);
+    flags.push(CLI.FLAGS.YOLO);
   } else if (options?.fullAuto) {
-    args.push(CLI.FLAGS.FULL_AUTO);
+    flags.push(CLI.FLAGS.FULL_AUTO);
   } else {
     // Approval policy
     if (options?.approval || options?.approvalPolicy) {
       const approvalValue = options.approval || options.approvalPolicy;
       if (approvalValue) {
-        args.push(CLI.FLAGS.ASK_FOR_APPROVAL, approvalValue);
+        flags.push(CLI.FLAGS.CONFIG, `approval_policy=${approvalValue}`);
       }
     }
     // Sandbox mode
     if (options?.sandboxMode) {
-      args.push(CLI.FLAGS.SANDBOX_MODE, options.sandboxMode);
+      flags.push(CLI.FLAGS.SANDBOX_MODE, options.sandboxMode);
     } else if (options?.search || options?.oss) {
       // Auto-enable workspace-write for search/oss if no sandbox specified
       Logger.debug(
         'Search/OSS enabled: auto-setting sandbox to workspace-write for network access'
       );
-      args.push(CLI.FLAGS.SANDBOX_MODE, 'workspace-write');
+      flags.push(CLI.FLAGS.SANDBOX_MODE, 'workspace-write');
     } else if (options?.approval || options?.approvalPolicy) {
       // Smart default: if approval is set but no sandboxMode specified,
       // auto-enable workspace-write to prevent read-only permission errors
       Logger.debug('Approval set without sandbox mode: auto-setting sandbox to workspace-write');
-      args.push(CLI.FLAGS.SANDBOX_MODE, 'workspace-write');
+      flags.push(CLI.FLAGS.SANDBOX_MODE, 'workspace-write');
     }
   }
 
@@ -249,39 +246,39 @@ export async function executeCodex(
   });
 
   if (resolvedWorkingDir) {
-    args.push(CLI.FLAGS.WORKING_DIR, resolvedWorkingDir);
+    flags.push(CLI.FLAGS.WORKING_DIR, resolvedWorkingDir);
     Logger.debug(`Resolved working directory for executeCodex: ${resolvedWorkingDir}`);
   }
 
   // Configuration
   if (options?.config) {
     if (typeof options.config === 'string') {
-      args.push(CLI.FLAGS.CONFIG, options.config);
+      flags.push(CLI.FLAGS.CONFIG, options.config);
     } else {
       // Convert object to key=value pairs
       const configStr = Object.entries(options.config)
         .map(([k, v]) => `${k}=${v}`)
         .join(',');
-      args.push(CLI.FLAGS.CONFIG, configStr);
+      flags.push(CLI.FLAGS.CONFIG, configStr);
     }
   }
 
   // Profile
   if (options?.profile) {
-    args.push(CLI.FLAGS.PROFILE, options.profile);
+    flags.push(CLI.FLAGS.PROFILE, options.profile);
   }
 
   // Images
   if (options?.image) {
     const images = Array.isArray(options.image) ? options.image : [options.image];
     for (const img of images) {
-      args.push(CLI.FLAGS.IMAGE, img);
+      flags.push(CLI.FLAGS.IMAGE, img);
     }
   }
 
   // OSS (Ollama) mode
   if (options?.oss) {
-    args.push(CLI.FLAGS.OSS);
+    flags.push(CLI.FLAGS.OSS);
   }
 
   // Enable features (including web search)
@@ -294,24 +291,17 @@ export async function executeCodex(
 
   // Add all features to args
   for (const feature of enableFeatures) {
-    args.push(CLI.FLAGS.ENABLE, feature);
+    flags.push(CLI.FLAGS.ENABLE, feature);
   }
 
   // Disable features
   if (options?.disableFeatures && Array.isArray(options.disableFeatures)) {
     for (const feature of options.disableFeatures) {
-      args.push(CLI.FLAGS.DISABLE, feature);
+      flags.push(CLI.FLAGS.DISABLE, feature);
     }
   }
 
-  // Use exec mode for non-interactive execution
-  if (options?.useExec !== false) {
-    // Default to true for non-interactive execution
-    args.push('exec');
-  }
-
-  // Skip git repo check (not all environments are git repos)
-  args.push(CLI.FLAGS.SKIP_GIT_REPO_CHECK);
+  const args = ['exec', ...flags, CLI.FLAGS.SKIP_GIT_REPO_CHECK];
 
   // Add the prompt
   args.push(prompt);
@@ -330,7 +320,10 @@ export async function executeCodex(
       // Enhanced error handling with specific messages
       const errorMessage = result.stderr || 'Unknown error';
 
-      if (errorMessage.includes('command not found') || errorMessage.includes('not found')) {
+      if (
+        result.code === null &&
+        (errorMessage.includes('not found') || errorMessage.includes('ENOENT'))
+      ) {
         throw new Error('Codex CLI not found. Install with: npm install -g @openai/codex');
       }
 

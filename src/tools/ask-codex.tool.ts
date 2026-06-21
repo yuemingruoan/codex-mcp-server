@@ -178,7 +178,7 @@ export const askCodexTool: UnifiedTool = {
       const errorMessage = error instanceof Error ? error.message : String(error);
 
       // Enhanced error handling with helpful context
-      if (errorMessage.includes('not found') || errorMessage.includes('command not found')) {
+      if (errorMessage.includes('Codex CLI not found')) {
         return `❌ **Codex CLI Not Found**: ${ERROR_MESSAGES.CODEX_NOT_FOUND}
 
 **Quick Fix:**
