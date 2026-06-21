@@ -24,6 +24,12 @@ Codex MCP Tool is an open‑source Model Context Protocol (MCP) server that conn
 
 Goal: Use Codex directly from your MCP-enabled editor to analyze and edit code efficiently.
 
+## Orchestration workflow (codex as implementer)
+
+This fork ships a ready-to-use **orchestration prompt** in [`CLAUDE.md`](./CLAUDE.md): let an orchestrating assistant (e.g. Claude) handle analysis, planning and communication, and delegate all implementation — coding, file edits, command/build/git runs, log digging — to **codex** through this MCP server.
+
+To adopt it, copy the contents of [`CLAUDE.md`](./CLAUDE.md) into your own global (`~/.claude/CLAUDE.md`) or project `CLAUDE.md`. It covers the division of labor, dispatch discipline (small, well-scoped tasks with an explicit report format), task splitting (codex has a smaller context window), and context isolation.
+
 ## Prerequisites
 
 Before using this tool, ensure you have:
