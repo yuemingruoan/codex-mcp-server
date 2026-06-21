@@ -1,3 +1,5 @@
+import { resolveCodexBinary } from './utils/codexBinaryResolver.js';
+
 // Logging
 export const LOG_PREFIX = '[CODEX-MCP]';
 
@@ -80,7 +82,7 @@ export const PROTOCOL = {
 export const CLI = {
   // Command names
   COMMANDS: {
-    CODEX: 'codex',
+    CODEX: resolveCodexBinary(),
     CODEX_EXEC: 'codex exec',
     ECHO: 'echo',
   },

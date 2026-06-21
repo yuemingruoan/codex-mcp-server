@@ -19,7 +19,7 @@ import {
   CallToolResult,
 } from '@modelcontextprotocol/sdk/types.js';
 import { Logger } from './utils/logger.js';
-import { PROTOCOL, ToolArguments } from './constants.js';
+import { CLI, PROTOCOL, ToolArguments } from './constants.js';
 
 import {
   getToolDefinitions,
@@ -282,6 +282,7 @@ server.setRequestHandler(
 // Start the server
 async function main() {
   Logger.debug('init codex-mcp-tool');
+  Logger.debug(`Using codex binary: ${CLI.COMMANDS.CODEX}`);
   const transport = new StdioServerTransport();
   await server.connect(transport);
   Logger.debug('codex-mcp-tool listening on stdio');
