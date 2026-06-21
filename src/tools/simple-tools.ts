@@ -1,6 +1,13 @@
+import { readFileSync } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 import { z } from 'zod';
 import { UnifiedTool } from './registry.js';
 import { executeCommand } from '../utils/commandExecutor.js';
+
+const pkg = JSON.parse(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), '../../package.json'), 'utf8'),
+) as { name: string; version: string };
 
 const pingArgsSchema = z.object({
   prompt: z.string().default('').describe('Message to echo '),
@@ -56,13 +63,13 @@ export const versionTool: UnifiedTool = {
 - Codex CLI: ${codexVersion.trim()}
 - Node.js: ${nodeVersion}
 - Platform: ${platform}
-- MCP Server: @cexll/codex-mcp-server v1.2.5`;
+- MCP Server: ${pkg.name} v${pkg.version}`;
     } catch (error) {
       return `**System Information:**
 - Codex CLI: Not installed or not accessible
 - Node.js: ${process.version}
 - Platform: ${process.platform}
-- MCP Server: @cexll/codex-mcp-server v1.2.4
+- MCP Server: ${pkg.name} v${pkg.version}
 
 *Note: Install Codex CLI with: npm install -g @openai/codex*`;
     }

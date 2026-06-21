@@ -2,11 +2,11 @@
 
 <div align="center">
 
-[![GitHub Release](https://img.shields.io/github/v/release/x51xxx/codex-mcp-tool?logo=github&label=GitHub)](https://github.com/x51xxx/codex-mcp-tool/releases)
-[![npm version](https://img.shields.io/npm/v/@cexll/codex-mcp-server)](https://www.npmjs.com/package/@cexll/codex-mcp-server)
-[![npm downloads](https://img.shields.io/npm/dt/@cexll/codex-mcp-server)](https://www.npmjs.com/package/@cexll/codex-mcp-server)
+[![GitHub Release](https://img.shields.io/github/v/release/yuemingruoan/codex-mcp-server?logo=github&label=GitHub)](https://github.com/yuemingruoan/codex-mcp-server/releases)
+[![npm version](https://img.shields.io/npm/v/@yuemingruoan/codex-mcp-server)](https://www.npmjs.com/package/@yuemingruoan/codex-mcp-server)
+[![npm downloads](https://img.shields.io/npm/dt/@yuemingruoan/codex-mcp-server)](https://www.npmjs.com/package/@yuemingruoan/codex-mcp-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Open Source](https://img.shields.io/badge/Open%20Source-❤️-red.svg)](https://github.com/x51xxx/codex-mcp-tool)
+[![Open Source](https://img.shields.io/badge/Open%20Source-❤️-red.svg)](https://github.com/yuemingruoan/codex-mcp-server)
 
 </div>
 
@@ -16,8 +16,8 @@ Codex MCP Tool is an open‑source Model Context Protocol (MCP) server that conn
 
 - Ask Codex questions from your MCP client, or brainstorm ideas programmatically.
 
-<a href="https://glama.ai/mcp/servers/@cexll/codex-mcp-server">
-  <img width="380" height="200" src="https://glama.ai/mcp/servers/@cexll/codex-mcp-server/badge" alt="Codex Tool MCP server" />
+<a href="https://glama.ai/mcp/servers/@yuemingruoan/codex-mcp-server">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@yuemingruoan/codex-mcp-server/badge" alt="Codex Tool MCP server" />
 </a>
 
 ## TLDR: [![Claude](https://img.shields.io/badge/Claude-D97757?logo=claude&logoColor=fff)](#) + Codex CLI
@@ -36,7 +36,7 @@ Before using this tool, ensure you have:
 ### One-Line Setup
 
 ```bash
-claude mcp add codex-cli -- npx -y @cexll/codex-mcp-server
+claude mcp add codex-cli -- npx -y @yuemingruoan/codex-mcp-server
 ```
 
 ### Verify Installation
@@ -54,7 +54,7 @@ If you already have it configured in Claude Desktop:
 ```json
 "codex-cli": {
   "command": "npx",
-  "args": ["-y", "@cexll/codex-mcp-server"]
+  "args": ["-y", "@yuemingruoan/codex-mcp-server"]
 }
 ```
 
@@ -68,6 +68,16 @@ claude mcp add-from-claude-desktop
 
 Register the MCP server with your MCP client:
 
+### Codex Binary Resolution
+
+The server resolves the Codex CLI in this order:
+
+1. `CODEX_EXECUTABLE` or `CODEX_BIN`
+2. Codex.app bundled CLI
+3. `codex` on `PATH`
+
+To force a specific binary, set `CODEX_EXECUTABLE` in your MCP server environment.
+
 ### For NPX Usage (Recommended)
 
 Add this configuration to your Claude Desktop config file:
@@ -77,7 +87,7 @@ Add this configuration to your Claude Desktop config file:
   "mcpServers": {
     "codex-cli": {
       "command": "npx",
-      "args": ["-y", "@cexll/codex-mcp-server"]
+      "args": ["-y", "@yuemingruoan/codex-mcp-server"]
     }
   }
 }
@@ -254,7 +264,7 @@ If you encounter `❌ Permission Error: Operation blocked by sandbox policy`:
 
 ```bash
 # v1.2+ includes smart defaults to prevent permission errors
-npm install -g @cexll/codex-mcp-server@latest
+npm install -g @yuemingruoan/codex-mcp-server@latest
 ```
 
 #### Common Issues

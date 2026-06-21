@@ -1,6 +1,6 @@
 {
-  "name": "@cexll/codex-mcp-server",
-  "version": "1.2.5",
+  "name": "@yuemingruoan/codex-mcp-server",
+  "version": "1.4.0",
   "description": "MCP server for Codex CLI integration",
   "type": "module",
   "main": "dist/index.js",
@@ -34,16 +34,16 @@
     "integration",
     "automation"
   ],
-  "author": "Taras Trishchuk",
+  "author": "yuemingruoan",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cexll/codex-mcp-server.git"
+    "url": "git+https://github.com/yuemingruoan/codex-mcp-server.git"
   },
   "bugs": {
-    "url": "https://github.com/cexll/codex-mcp-server/issues"
+    "url": "https://github.com/yuemingruoan/codex-mcp-server/issues"
   },
-  "homepage": "https://github.com/cexll/codex-mcp-server#readme",
+  "homepage": "https://github.com/yuemingruoan/codex-mcp-server#readme",
   "engines": {
     "node": ">=18.0.0"
   },
