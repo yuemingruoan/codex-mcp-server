@@ -275,22 +275,27 @@ npm install -g @yuemingruoan/codex-mcp-server@latest
 
 #### Common Issues
 
-**Issue 1: MCP Tool Timeout Error**
+### Long-running codex tasks & timeouts
 
-If you encounter timeout errors when using Codex MCP tools:
+Codex runs — especially at higher `model_reasoning_effort` — often take several minutes, which is longer than an MCP client's default per-tool-call timeout (Claude Code defaults to roughly 60s), and progress/keepalive notifications are **not** reliably honored to extend it. If you hit `❌ Request Timeout`, raise the timeout on both sides:
 
-```bash
-# Set the MCP tool timeout environment variable (in milliseconds)
-export MCP_TOOL_TIMEOUT=36000000  # 10 hours
+**Client (Claude Code)** — add this to `~/.claude/settings.json` under `env` (values in milliseconds), then restart:
 
-# For Windows (PowerShell):
-$env:MCP_TOOL_TIMEOUT=36000000
-
-# For Windows (CMD):
-set MCP_TOOL_TIMEOUT=36000000
+```json
+{
+  "env": {
+    "MCP_TOOL_TIMEOUT": "1800000",
+    "MCP_TIMEOUT": "120000"
+  }
+}
 ```
 
-Add this to your shell profile (`~/.bashrc`, `~/.zshrc`, or PowerShell profile) to make it permanent.
+- `MCP_TOOL_TIMEOUT` — per tool-call timeout (here 30 min).
+- `MCP_TIMEOUT` — server startup timeout (here 2 min; headroom for the first `npx` fetch).
+
+**Server (this package)** — the internal default codex timeout is **30 minutes** (since v1.4.1). Override it per call with the `timeout` parameter (ms) on `ask-codex`.
+
+**Best practice** — keep tasks small and well-scoped, and use a moderate `model_reasoning_effort` (e.g. `medium`) so codex finishes quickly; that avoids most timeouts in the first place.
 
 **Issue 2: Codex Cannot Write Files**
 
