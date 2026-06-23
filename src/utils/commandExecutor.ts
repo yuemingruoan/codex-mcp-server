@@ -34,7 +34,7 @@ export async function executeCommandDetailed(
 ): Promise<CommandResult> {
   const {
     onProgress,
-    timeoutMs = 600000,
+    timeoutMs = 1800000,
     maxOutputBytes = 50 * 1024 * 1024, // 50MB default
     retry,
   } = options;
@@ -109,7 +109,7 @@ async function executeOnce(
           }
         }, 5000);
       }
-    }, timeoutMs || 600000);
+    }, timeoutMs || 1800000);
 
     childProcess.stdout?.on('data', (data: Buffer) => {
       // Check output size limit
@@ -204,7 +204,7 @@ export async function executeCommand(
   command: string,
   args: string[],
   onProgress?: (newOutput: string) => void,
-  timeoutMs: number = 600000
+  timeoutMs: number = 1800000
 ): Promise<string> {
   const result = await executeCommandDetailed(command, args, {
     onProgress,

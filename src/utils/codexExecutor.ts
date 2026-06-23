@@ -173,7 +173,7 @@ export async function executeCodexCLI(
       const errorMessage = result.stderr || 'Unknown error';
       throw new Error(
         result.timedOut
-          ? `Codex CLI timed out after ${options?.timeoutMs || 600000}ms`
+          ? `Codex CLI timed out after ${options?.timeoutMs || 1800000}ms`
           : `Codex CLI failed with exit code ${result.code}: ${errorMessage}`
       );
     }
@@ -307,7 +307,7 @@ export async function executeCodex(
   args.push(prompt);
 
   try {
-    const timeoutMs = options?.timeout || options?.timeoutMs || 600000; // 10 minutes default
+    const timeoutMs = options?.timeout || options?.timeoutMs || 1800000; // 30 minutes default
 
     const result = await executeCommandDetailed(CLI.COMMANDS.CODEX, args, {
       onProgress,
