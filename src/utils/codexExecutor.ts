@@ -173,7 +173,7 @@ export async function executeCodexCLI(
       const errorMessage = result.stderr || 'Unknown error';
       throw new Error(
         result.timedOut
-          ? `Codex CLI timed out after ${options?.timeoutMs || 1800000}ms`
+          ? `Codex CLI timeout: process exceeded ${options?.timeoutMs || 1800000}ms`
           : `Codex CLI failed with exit code ${result.code}: ${errorMessage}`
       );
     }
@@ -320,8 +320,13 @@ export async function executeCodex(
       // Enhanced error handling with specific messages
       const errorMessage = result.stderr || 'Unknown error';
 
+      if (result.timedOut) {
+        throw new Error(`Codex CLI timeout: process exceeded ${timeoutMs}ms`);
+      }
+
       if (
         result.code === null &&
+        !result.timedOut &&
         (errorMessage.includes('not found') || errorMessage.includes('ENOENT'))
       ) {
         throw new Error('Codex CLI not found. Install with: npm install -g @openai/codex');
