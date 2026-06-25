@@ -340,13 +340,7 @@ export async function executeCodex(
         throw new Error('Rate limit exceeded. Please wait and try again');
       }
 
-      if (errorMessage.includes('permission') || errorMessage.includes('sandbox')) {
-        throw new Error(
-          `Permission denied. Try adjusting sandbox mode or approval policy: ${errorMessage}`
-        );
-      }
-
-      throw new Error(`Codex CLI failed: ${errorMessage}`);
+      throw new Error(`Codex CLI failed (exit ${result.code}): ${errorMessage}`);
     }
 
     return result.stdout;
